@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Предложение обмена{% endblock %}
+{% block content %}
+<h2>Создать предложение обмена</h2>
+{% if messages %}
+    <ul>
+    {% for message in messages %}
+        <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+<form method="post">
+    {% csrf_token %}
+
+    <label>Ваше объявление (что вы предлагаете):</label>
+    <select name="ad_sender">
+        {% for ad in user_ads %}
+            <option value="{{ ad.id }}">
+                {{ ad.title }} ({{ ad.category }})
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>Объявление получателя:</label>
+    {{ form.ad_receiver }}
+
+    <label>Комментарий:</label>
+    {{ form.comment }}
+
+    <button type="submit">Отправить предложение</button>
+</form>
+{% endblock %}

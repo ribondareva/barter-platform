@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Мои предложения{% endblock %}
+
+{% block content %}
+<h2>Предложения обмена</h2>
+
+<form method="get" class="filter-form">
+    <div class="filter-block">
+        <label for="status">Статус</label>
+        <select name="status" id="status">
+            <option value="">Все</option>
+            <option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Ожидает</option>
+            <option value="accepted" {% if request.GET.status == 'accepted' %}selected{% endif %}>Принято</option>
+            <option value="rejected" {% if request.GET.status == 'rejected' %}selected{% endif %}>Отклонено</option>
+        </select>
+    </div>
+
+    <div class="filter-block">
+        <label for="sender">Что я предлагаю</label>
+        <select name="sender" id="sender">
+            <option value="">Все</option>
+            {% for ad in user_ads %}
+                <option value="{{ ad.id }}" {% if request.GET.sender == ad.id|stringformat:"s" %}selected{% endif %}>
+                    {{ ad.title|slice:":20" }}{% if ad.title|length > 20 %}...{% endif %}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-block">
+        <label for="receiver">Что хочу получить</label>
+        <select name="receiver" id="receiver">
+            <option value="">Все</option>
+            {% for ad in other_ads %}
+                <option value="{{ ad.id }}" {% if request.GET.receiver == ad.id|stringformat:"s" %}selected{% endif %}>
+                    {{ ad.title|slice:":15" }}{% if ad.title|length > 15 %}...{% endif %}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="filter-block">
+        <label>&nbsp;</label>
+        <div class="button-row">
+            <button type="submit" class="filter-button">Найти</button>
+            <button type="button" class="filter-button reset-button" onclick="window.location.href='{% url 'proposal_list' %}'">Сбросить все</button>
+        </div>
+    </div>
+</form>
+
+
+<ul>
+{% for p in proposals %}
+    <li class="proposal-item">
+        <strong>От:</strong> {{ p.ad_sender.title }} →
+        <strong>К:</strong> {{ p.ad_receiver.title }} |
+        <strong>Статус:</strong>
+        {% if p.status == "accepted" %}
+            <span style="color:green;">✅ Принято</span>
+        {% elif p.status == "rejected" %}
+            <span style="color:red;">❌ Отклонено</span>
+        {% else %}
+            🟡 Ожидает
+        {% endif %}
+        |
+        <strong>Комментарий:</strong> {{ p.comment }}
+
+        {% if p.ad_receiver.user == request.user and p.status == 'pending' %}
+            <form action="{% url 'proposal_update' p.id %}" method="post" style="display:inline;">
+                {% csrf_token %}
+                <button name="status" value="accepted">Принять</button>
+                <button name="status" value="rejected">Отклонить</button>
+            </form>
+        {% endif %}
+    </li>
+{% empty %}
+    <li class="proposal-empty">
+        {% if request.GET %}
+            Ничего не найдено по текущим фильтрам.
+        {% else %}
+            У вас пока нет предложений обмена.
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}

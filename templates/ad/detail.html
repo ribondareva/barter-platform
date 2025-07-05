@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}{{ ad.title }}{% endblock %}
+{% block content %}
+<h2>{{ ad.title }}</h2>
+<p><strong>Описание:</strong> {{ ad.description }}</p>
+<p><strong>Категория:</strong> {{ ad.category }}</p>
+<p><strong>Состояние:</strong> {{ ad.condition }}</p>
+<p><strong>Дата публикации:</strong> {{ ad.created_at }}</p>
+{% if ad.image_url %}
+    <img src="{{ ad.image_url }}" alt="Фото" width="300">
+{% endif %}
+
+{% if ad.user == request.user %}
+    <p>
+        <a href="{% url 'ad_edit' ad.id %}">Редактировать</a> |
+        <a href="{% url 'ad_delete' ad.id %}">Удалить</a>
+    </p>
+{% endif %}
+{% endblock %}
