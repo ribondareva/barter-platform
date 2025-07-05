@@ -4,7 +4,7 @@
 ![Django](https://img.shields.io/badge/django-5.2-green)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Tests](https://img.shields.io/badge/tests-pytest-orange)
-![Coverage](https://img.shields.io/badge/coverage-79%25-yellow)
+![Coverage](https://img.shields.io/badge/coverage-90%25-green)
 
 Веб-приложение на Django для обмена вещами между пользователями.  
 Пользователи могут размещать объявления, просматривать чужие, отправлять предложения на обмен и управлять своими активностями.
@@ -81,11 +81,17 @@ http://127.0.0.1:8000/
 ```bash
 pytest
 ```
-Общее покрытие тестами 79%.
+Общее покрытие тестами 90%.
 Чтобы посмотреть покрытие тестами (test coverage):
 ```bash
 pytest --cov=ads --cov-report=term-missing
 ```
+Покрыты тестами:
+- базовые сценарии (GET/POST, login/logout)
+- позитивные и негативные кейсы (валидность, доступность, права)
+- пограничные случаи (несуществующие объявления, чужие объявления)
+- проверка форм и результатов (redirects, status codes, содержимое ответа)
+
 ## Примечания
 * В проекте используется встроенная система пользователей Django
 * Обмен возможен только между объявлениями разных пользователей
